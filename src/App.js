@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import {decCounter, fetchTodos, incCounter, resetCounter} from './redux';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+export default function App() {
+    // const counter = useSelector(({counter}) => counter.counter)
+    const {todos, counter} = useSelector(
+        ({todos: {todos}, counter: {counter}}) =>
+            ({todos, counter})
+    );
+    const dispatch = useDispatch()
+
+
+    useEffect(() => {
+        fetchTodos(dispatch)
+    }, [dispatch])
+
+    const handleInc = () => dispatch(incCounter())
+    const handleDec = () => dispatch(decCounter())
+    const handlerReset = () => dispatch(resetCounter())
+
+    return (
+        <div>
+            <button onClick={handleInc}>inc</button>
+            <button onClick={handleDec}>dec</button>
+            <button onClick={handlerReset}>reset</button>
+            <h1>{counter}</h1>
+            {
+                todos.map((todo) => <div key={todo.id}>{todo.id} - {todo.title}</div>)
+            }
+        </div>
+    );
 }
-
-export default App;
